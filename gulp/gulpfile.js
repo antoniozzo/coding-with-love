@@ -1,62 +1,57 @@
-/*******************************************************************************
-1. DEPENDENCIES
-*******************************************************************************/
+/* Imports
+   ================================================ */
 
-var gulp        = require('gulp'),
+var config      = require('./gulpconfig.json'),
+	gulp        = require('gulp'),
 	less        = require('gulp-less'),
 	uglify      = require('gulp-uglify'),
 	jshint      = require('gulp-jshint'),
 	concat      = require('gulp-concat'),
 	notify      = require('gulp-notify'),
 	plumber     = require('gulp-plumber'),
+	rename      = require('gulp-rename'),
 	stylish     = require('jshint-stylish'),
 	minifycss   = require('gulp-minify-css'),
 	sourcemaps  = require('gulp-sourcemaps'),
-	browserSync = require('browser-sync');
+	browserSync = require('browser-sync'),
+	svgmin      = require('gulp-svgmin'),
+	svg2png     = require('gulp-svg2png'),
+	clean       = require('gulp-clean');
 
 
-/*******************************************************************************
-2. FILE DESTINATIONS
-*******************************************************************************/
+/* CSS tasks
+   ========================================================== */
 
-var config = {
-	css: {
-		src  : [
-			'assets/src/less/main.less'
-		],
-		dist : 'assets/dist/css'
-	},
-	js: {
-		src  : [
-			'assets/src/js/plugins/**/*.js',
-			'assets/src/js/main.js'
-		],
-		dist : 'assets/dist/js'
-	}
-};
+// clean
+gulp.task('css-clean', function() {
+	gulp.src(config.css.dist, {read: false})
+		.pipe(clean());
+});
 
-
-/*******************************************************************************
-3. LESS TASK
-*******************************************************************************/
-
-gulp.task('less', function() {
+// compile & minify
+gulp.task('less', ['css-clean'], function() {
 	gulp.src(config.css.src)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 			.pipe(less())
 			.pipe(minifycss())
+			.pipe(rename(config.css.id + '.css'))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest(config.css.dist))
-		.pipe(notify({ message: 'Less complete' }));
+		.pipe(notify({ message: 'CSS tasks done!' }));
 });
 
 
-/*******************************************************************************
-4. JS TASKS
-*******************************************************************************/
+/* JS tasks
+   ========================================================== */
 
-// lint my custom js
+// clean
+gulp.task('js-clean', function() {
+	gulp.src(config.js.dist, {read: false})
+		.pipe(clean());
+});
+
+// js linter
 gulp.task('js-lint', function() {
 	gulp.src(config.js.src[config.js.src.length - 1])
 		.pipe(plumber())
@@ -64,31 +59,33 @@ gulp.task('js-lint', function() {
 		.pipe(jshint.reporter(stylish));
 });
 
-// concatinate custom scripts
-gulp.task('js-scripts', function() {
+// compile & minify
+gulp.task('js-scripts', ['js-lint', 'js-clean'], function() {
 	gulp.src(config.js.src)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
-			.pipe(concat('scripts.js'))
+			.pipe(concat(config.js.id + '.js'))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest(config.js.dist))
-		.pipe(notify({ message: 'JS scripts complete' }));
+		.pipe(notify({ message: 'JS tasks done!' }));
 });
 
 
-/*******************************************************************************
-5. WATCH TASK
-*******************************************************************************/
+/* SVG tasks
+   ========================================================== */
 
-gulp.task('watch', function() {
-	gulp.watch(config.css.src, ['less', browserSync.reload]);
-	gulp.watch(config.js.src, ['js-lint', 'js-scripts', browserSync.reload]);
+gulp.task('svg', function() {
+	gulp.src(config.svg.src)
+		.pipe(svgmin())
+		.pipe(gulp.dest(config.svg.dist))
+		.pipe(svg2png())
+		.pipe(gulp.dest(config.svg.dist));
+		.pipe(notify({ message: 'SVG tasks done!' }));
 });
 
 
-/*******************************************************************************
-6. BROWSER SYNC
-*******************************************************************************/
+/* BROWSER SYNC tasks
+   ========================================================== */
 
 gulp.task('browser-sync', function() {
 	browserSync({
@@ -98,8 +95,17 @@ gulp.task('browser-sync', function() {
 });
 
 
-/*******************************************************************************
-7. GULP TASKS
-*******************************************************************************/
+/* WATCH tasks
+   ========================================================== */
 
-gulp.task('default', ['less', 'js-lint', 'js-scripts', 'watch', 'browser-sync']);
+gulp.task('watch', function() {
+	gulp.watch(config.svg.src, ['svg', browserSync.reload]);
+	gulp.watch(config.css.src, ['less', browserSync.reload]);
+	gulp.watch(config.js.src, ['js-scripts', browserSync.reload]);
+});
+
+
+/* DEFAULT tasks
+   ========================================================== */
+
+gulp.task('default', ['svg', 'less', 'js-scripts', 'watch', 'browser-sync']);

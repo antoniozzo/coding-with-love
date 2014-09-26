@@ -1,0 +1,20 @@
+{
+	"css": {
+		"src": "src/less/main.less",
+		"dist": "dist/css",
+		"id": "main"
+	},
+	"js": {
+		"src": [
+			"src/js/vendor/**/*.js",
+			"src/js/main.js"
+		],
+		"dist": "dist/js",
+		"id": "main"
+	},
+	"svg": {
+		"src": "src/img/**/*.svg",
+		"dist": "dist/img"
+	},
+	"host": "localhost"
+}

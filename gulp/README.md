@@ -1,1 +1,1 @@
-npm install jshint-stylish gulp-concat gulp-plumber gulp-sourcemaps gulp-uglify gulp gulp-minify-css gulp-jshint browser-sync gulp-less gulp-notify --save-dev
+npm install jshint-stylish gulp-concat gulp-svgmin gulp-svg2png gulp-rename gulp-plumber gulp-sourcemaps gulp-uglify gulp gulp-minify-css gulp-jshint browser-sync gulp-less gulp-notify gulp-clean --save-dev
