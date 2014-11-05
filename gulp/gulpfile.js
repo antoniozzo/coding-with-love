@@ -14,13 +14,28 @@ var config      = require('./gulpconfig.json'),
 	minifycss   = require('gulp-minify-css'),
 	sourcemaps  = require('gulp-sourcemaps'),
 	browserSync = require('browser-sync'),
-	handlebars  = require('gulp-ember-handlebars'),
-	svgmin      = require('gulp-svgmin'),
-	svg2png     = require('gulp-svg2png'),
-	clean       = require('gulp-clean'),
+	svg         = require('gulp-svg-sprites'),
+	clean       = require('gulp-rimraf'),
 	rev         = require('gulp-rev'),
-	seq         = require('gulp-run-sequence'),
-	revO        = require('gulp-rev-outdated');
+	seq         = require('run-sequence'),
+	revO        = require('gulp-rev-outdated'),
+	handlebars  = require('gulp-ember-handlebars'),
+	gutil       = require('gulp-util');
+
+
+/* Methods
+   ========================================================== */
+
+var onError = function(error) {
+	notify.onError({
+		title    : 'Gulp',
+		subtitle : 'Failure!',
+		message  : "Error: <%= error.message %>",
+		sound    : 'Beep'
+	})(error);
+
+	this.emit('end');
+};
 
 
 /* CSS tasks
@@ -35,23 +50,27 @@ gulp.task('css-clean', function() {
 // compile & minify
 gulp.task('less', function() {
 	return gulp.src(config.css.src)
-		.pipe(plumber())
+    	.pipe(plumber({errorHandler: onError}))
 		.pipe(sourcemaps.init())
 			.pipe(less())
 			.pipe(minifycss())
 			.pipe(rename(config.css.id + '.css'))
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest(config.css.dist))
-		.pipe(notify({
-			title    : 'CSS',
-			subtitle : 'success',
-			message  : "Created file: <%= file.relative %>!"
-		}));
+		.pipe(gulp.dest(config.css.dist));
 });
 
 
 /* JS tasks
    ========================================================== */
+
+// templates
+gulp.task('templates', function() {
+	return gulp.src([config.templates.src])
+		.pipe(plumber({errorHandler: onError}))
+		.pipe(handlebars({outputType: 'browser'}))
+		.pipe(concat(config.templates.id + '.js'))
+		.pipe(gulp.dest(config.templates.dist));
+});
 
 // clean
 gulp.task('js-clean', function() {
@@ -59,24 +78,10 @@ gulp.task('js-clean', function() {
 		.pipe(clean());
 });
 
-// templates
-gulp.task('templates', function() {
-	return gulp.src([config.templates.src])
-		.pipe(plumber())
-		.pipe(handlebars({outputType: 'browser'}))
-		.pipe(concat(config.templates.id + '.js'))
-		.pipe(gulp.dest(config.templates.dist))
-		.pipe(notify({
-			title    : 'Handlebars',
-			subtitle : 'success',
-			message  : "Created file: <%= file.relative %>!"
-		}));
-});
-
 // js linter
 gulp.task('js-lint', function() {
 	return gulp.src(config.js.src)
-		.pipe(plumber())
+		.pipe(plumber({errorHandler: onError}))
 		.pipe(jshint())
 		.pipe(jshint.reporter(stylish));
 });
@@ -84,17 +89,12 @@ gulp.task('js-lint', function() {
 // compile & minify
 gulp.task('js-scripts', ['js-lint'], function() {
 	return gulp.src(config.js.vendor.concat(config.js.src))
-		.pipe(plumber())
+		.pipe(plumber({errorHandler: onError}))
 		.pipe(sourcemaps.init())
 			.pipe(concat(config.js.id + '.js'))
 			.pipe(uglify())
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest(config.js.dist))
-		.pipe(notify({
-			title    : 'JS',
-			subtitle : 'success',
-			message  : "Created file: <%= file.relative %>!"
-		}));
+		.pipe(gulp.dest(config.js.dist));
 });
 
 
@@ -103,15 +103,16 @@ gulp.task('js-scripts', ['js-lint'], function() {
 
 gulp.task('svg', function() {
 	return gulp.src(config.svg.src)
-		.pipe(svgmin())
+		.pipe(plumber({errorHandler: onError}))
 		.pipe(gulp.dest(config.svg.dist))
-		.pipe(svg2png())
-		.pipe(gulp.dest(config.svg.dist))
-		.pipe(notify({
-			title    : 'SVG',
-			subtitle : 'success',
-			message  : "Created file: <%= file.relative %>!"
-		}));
+		.pipe(svg({
+			mode    : "symbols",
+			preview : false,
+			svg     : {
+				symbols : config.svg.id + '.svg'
+			}
+		}))
+		.pipe(gulp.dest(config.svg.dist + '/sprite'));
 });
 
 
@@ -121,10 +122,11 @@ gulp.task('svg', function() {
 gulp.task('rev-clean', function() {
 	return gulp.src([
 			config.css.dist + '/*.css',
-			config.js.dist + '/*.js'
+			config.js.dist + '/*.js',
+			config.svg.dist + '/*.svg'
 		], {read: false})
-        .pipe(revO(1))
-        .pipe(clean());
+		.pipe(revO(1))
+		.pipe(clean());
 });
 
 gulp.task('rev', function() {
@@ -136,12 +138,7 @@ gulp.task('rev', function() {
 		.pipe(rev())
 		.pipe(gulp.dest(config.rev.dist))
 		.pipe(rev.manifest())
-		.pipe(gulp.dest(config.rev.dist))
-		.pipe(notify({
-			title    : 'REV',
-			subtitle : 'success',
-			message  : "Created file: <%= file.relative %>!"
-		}));
+		.pipe(gulp.dest(config.rev.dist));
 });
 
 
@@ -155,23 +152,35 @@ gulp.task('browser-sync', function() {
 	});
 });
 
+// Reload all Browsers
+gulp.task('bs-reload', function() {
+	browserSync.reload({once: true});
+});
+
+// Stream reload css 
+gulp.task('bs-css', function() {
+	return gulp.src(config.css.dist + '/' + config.css.id + '.css')
+		.pipe(plumber({errorHandler: onError}))
+		.pipe(browserSync.reload({stream: true}));
+});
+
 
 /* WATCH tasks
    ========================================================== */
 
 gulp.task('watch', function() {
-	gulp.watch(config.svg.src, ['svg'/*, browserSync.reload*/]);
+	gulp.watch(config.svg.src, ['svg', 'bs-reload']);
 
-	gulp.watch(config.css.src, function() {
-		seq('less', 'rev-clean', 'rev'/*, browserSync.reload*/);
+	gulp.watch(config.css.watch, function() {
+		seq('less', 'rev-clean', 'rev', 'bs-css');
 	});
 
 	gulp.watch(config.js.src, function() {
-		seq('js-scripts', 'rev-clean', 'rev'/*, browserSync.reload*/);
+		seq('js-scripts', 'rev-clean', 'rev', 'bs-reload');
 	});
 
 	gulp.watch(config.templates.src, function() {
-		seq('templates', 'js-scripts', 'rev-clean', 'rev'/*, browserSync.reload*/);
+		seq('templates', 'js-scripts', 'rev-clean', 'rev', 'bs-reload');
 	});
 });
 
@@ -179,5 +188,5 @@ gulp.task('watch', function() {
 /* DEFAULT tasks
    ========================================================== */
 
+gulp.task('build', ['svg', 'less', 'templates', 'js-scripts', 'rev-clean', 'rev']);
 gulp.task('default', ['watch', 'browser-sync']);
-

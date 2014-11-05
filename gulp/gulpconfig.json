@@ -1,92 +1,41 @@
 {
 
-	/* CSS conf
-	   ========================================================== */
-
 	"css": {
-
-		// Src will be minified
+		"watch": "src/less/**/*.less",
 		"src": "src/less/main.less",
-
-		// Destination for the minified css
 		"dist": "dist/css",
-
-		// Name of the destination file
 		"id": "main"
-
 	},
 
-	/* JS conf
-	   ========================================================== */
-	
 	"js": {
-
-		// Vendor sources will not be jshint-ed
 		"vendor": [
-			"src/js/vendor/**/*.js",
+			"src/js/vendor/**/*.js"
 		],
-
-		// Src will be jshint-ed as well as
-		// concatenated & minified with the Vendor src
 		"src": [
 			"src/js/main.js"
 		],
-
-		// Destination for the minified js
 		"dist": "dist/js",
-
-		// Name of the destination file
 		"id": "main"
-
 	},
-
-	/* TEMPLATES conf (Ember-only, can be switched for a regular Hnadlebars)
-	   ========================================================== */
 
 	"templates": {
-
-		// Src will compiled as handlebars templates
 		"src": "src/js/templates/**/*.hbs",
-
-		// Destination for the minified template file
 		"dist": "src/js",
-
-		// Name of the destination file
 		"id": "templates"
-
 	},
-
-	/* SVG conf
-	   ========================================================== */
 
 	"svg": {
-
-		// Src will be minified and png-fallbacks created
 		"src": "src/img/**/*.svg",
-
-		// Destination for the svg & png images
-		"dist": "dist/img"
-
+		"dist": "dist/img",
+		"id": "main"
 	},
-
-	/* REVISION conf
-	   ========================================================== */
 
 	"rev": {
-
-		// Destination of the manifest file
 		"dist": "dist"
-
 	},
 
-	/* BROWSER SYNC conf
-	   ========================================================== */
-
 	"browser": {
-
-		// Host will be live updated on changes
 		"host": "localhost"
-
 	}
 
 }
