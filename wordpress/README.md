@@ -1,4 +1,4 @@
-# WordPress stack
+WordPress stack
 ================
 
 ### Installations steps
