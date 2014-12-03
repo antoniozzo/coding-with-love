@@ -1,0 +1,22 @@
+{
+	"name": "",
+	"description": "WordPress stack",
+	"type": "project",
+	"minimum-stability": "dev",
+	"repositories": [],
+	"config": {
+		"vendor-dir": "vendor"
+	},
+	"require": {
+		"composer/installers": "~1.0",
+		"johnpbloch/wordpress": "4.*"
+	},
+	"extra": {
+		"wordpress-install-dir": "wp"
+	},
+	"autoload": {
+		"classmap": [
+			"wp-content/plugins"
+		]
+	}
+}
