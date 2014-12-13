@@ -14,13 +14,13 @@ var config      = require('./gulpconfig.json'),
 	minifycss   = require('gulp-minify-css'),
 	sourcemaps  = require('gulp-sourcemaps'),
 	browserSync = require('browser-sync'),
+	svgmin      = require('gulp-svgmin'),
 	svg         = require('gulp-svg-sprites'),
 	clean       = require('gulp-rimraf'),
 	rev         = require('gulp-rev'),
 	seq         = require('run-sequence'),
 	revO        = require('gulp-rev-outdated'),
-	handlebars  = require('gulp-ember-handlebars'),
-	gutil       = require('gulp-util');
+	handlebars  = require('gulp-ember-handlebars');
 
 
 /* Methods
@@ -104,6 +104,7 @@ gulp.task('js-scripts', ['js-lint'], function() {
 gulp.task('svg', function() {
 	return gulp.src(config.svg.src)
 		.pipe(plumber({errorHandler: onError}))
+		.pipe(svgmin())
 		.pipe(gulp.dest(config.svg.dist))
 		.pipe(svg({
 			mode    : "symbols",

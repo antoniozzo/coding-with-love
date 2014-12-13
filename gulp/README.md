@@ -1,1 +1,10 @@
-npm install gulp gulp-less gulp-uglify gulp-jshint gulp-concat gulp-notify gulp-plumber gulp-rename jshint-stylish gulp-minify-css gulp-sourcemaps browser-sync gulp-svg-sprites gulp-rimraf gulp-rev run-sequence gulp-rev-outdated gulp-ember-handlebars gulp-util --save-dev
+Gulp stack
+================
+
+### Installations steps
+
+Run following in the terminal
+
+```
+npm install gulp gulp-less gulp-uglify gulp-jshint gulp-concat gulp-notify gulp-plumber gulp-rename jshint-stylish gulp-minify-css gulp-sourcemaps gulp-svgmin gulp-svg-sprites gulp-rimraf gulp-rev run-sequence gulp-rev-outdated gulp-ember-handlebars browser-sync --save-dev
+```
