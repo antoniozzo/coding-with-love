@@ -162,3 +162,4 @@ if [[ $pVAGRANT =~ ^[Yy] ]]; then
 	vagrant up
 fi
 
+echo "\n\nYour project is running in http://${pVHOST}\n\n"
