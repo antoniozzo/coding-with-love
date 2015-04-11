@@ -1,0 +1,40 @@
+{
+  "name": "pName",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antoniozzo/coding-with-love.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antoniozzo/coding-with-love/issues"
+  },
+  "homepage": "https://github.com/antoniozzo/coding-with-love.git",
+  "devDependencies": {
+    "browser-sync": "*",
+    "gulp": "*",
+    "gulp-clean": "*",
+    "gulp-concat": "*",
+    "gulp-ember-handlebars": "*",
+    "gulp-jshint": "*",
+    "gulp-less": "*",
+    "gulp-minify-css": "*1",
+    "gulp-notify": "*",
+    "gulp-plumber": "*",
+    "gulp-rename": "*",
+    "gulp-rev": "*",
+    "gulp-rev-outdated": "*",
+    "gulp-run-sequence": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-svg2png": "*",
+    "gulp-svgmin": "*",
+    "gulp-uglify": "*",
+    "jshint-stylish": "*",
+    "gulp-svg-sprites": "*",
+    "gulp-rimraf": "*"
+  }
+}
