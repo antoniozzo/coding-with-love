@@ -105,11 +105,6 @@ for i in ${inserts[@]}; do
 	insert Vagrantfile "\[${i}\]" ${!i}
 done
 
-appinserts=( name )
-for i in ${inserts[@]}; do
-	insert provision/app.sh "\[${i}\]" ${!i}
-done
-
 if [ ! -z $ip -a ! -z $vhost ]; then
 	echo "Will create a vhost in /etc/hosts, please provide password"
 	sudo bash -c "echo -e '${ip}\t${vhost}' >> /etc/hosts"
