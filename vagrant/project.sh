@@ -25,6 +25,9 @@ mv $pDIR/tmp/* $pDIR/
 rm -rf $pDIR/tmp
 cd $pDIR
 
+URL=https://vagrantcloud.com/ubuntu/trusty64
+IP=192.168.80.$(find ../ -maxdepth 1 -type d -print | wc -l | sed -e 's/^[ \t]*//')
+
 read -p "Do you wish to configure the VM yourself? [Default: no]: " pCONF
 if [[ $pCONF =~ ^[Yy] ]]; then
 	read -p "Enter box name [Default: ubuntu/trusty64]: " pBOX
@@ -91,14 +94,10 @@ pMYSQL=${pMYSQL:-yes}
 pDBNAME=${pDBNAME:-db}
 pDBPASS=${pDBPASS:-root}
 pVAGRANT=${pVAGRANT:-yes}
-
-URL=https://vagrantcloud.com/ubuntu/trusty64
 pBOXURL=${pBOXURL:-$URL}
-
-IP=192.168.80.$(find ../ -maxdepth 1 -type d -print | wc -l | sed -e 's/^[ \t]*//')
 pIP=${pIP:-$IP}
 
-DIR=$pTDIRpublic
+DIR="${pTDIR}public"
 pPUBDIR=${pPUBDIR:-$DIR}
 
 sed -i '' "s|pNAME|${pNAME}|g" Vagrantfile
