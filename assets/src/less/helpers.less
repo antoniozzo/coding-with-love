@@ -1,0 +1,42 @@
+/*
+Clearfix
+
+It's a clearfix!
+
+Styleguide helpers.clearfix
+*/
+
+.clearfix {
+	.clearfix();
+}
+
+
+/*
+Floats
+
+Markup:
+<span class="right">Right</span>
+<span class="left">Left</span>
+
+Styleguide helpers.floats
+*/
+
+.left {
+	&.left-mobile {
+		float: left;
+	}
+
+	@media @tablet {
+		float: left;
+	}
+}
+
+.right {
+	&.left-mobile {
+		float: right;
+	}
+
+	@media @tablet {
+		float: right;
+	}
+}

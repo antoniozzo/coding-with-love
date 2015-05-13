@@ -1,164 +1,134 @@
 #!/bin/bash
 
+num=$(find ../ -maxdepth 1 -type d -print | wc -l | sed -e 's/^[ \t]*//')
+
+# METHODS
+###########################################
+
+insert() {
+	sed -i '' "s|${2}|${3}|g" $1
+}
+
+getValue() {
+	local value
+	if [[ $2 =~ ^[Yy] ]]; then
+		if [[ ! -z $1 ]]; then
+			read -p "${3} [Default: ${1}]: " value
+		else
+			read -p "${3}: " value
+		fi
+	fi
+	value=${value:-$1}
+	echo $value
+}
+
+yesOrNo() {
+	local value
+	value=$(getValue $1 $2 "${3}")
+	if [[ $value =~ ^[Yy] ]]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+
+# PROMPTS
+###########################################
+
 while true; do
-	read -p "Enter project name: " pNAME
-	if [ -z $pNAME ]; then
+	name=$(getValue "" yes "Enter project name")
+
+	if [ -z $name ]; then
 		echo "No project name entered."
 	else
-		break
+		dir=$(getValue $name yes "Enter project dir")
+
+		if [ -d $dir ]; then
+			echo "This directory already exists."
+		else
+			break
+		fi
 	fi
 done
 
-while true; do
-	read -p "Enter project dir: [Default: ${pNAME}]: " pDIR
-	pDIR=${pDIR:-$pNAME}
-	if [ -d "$pDIR" ]; then
-		echo "This directory already exists."
-	else
-		break
+vagrant=$(yesOrNo yes yes "Do you want to start vagrant after install? (HIGH CPU USAGE)")
+ask=$(getValue no yes "Do you wish to configure the VM yourself?")
+boxName=$(getValue ubuntu/trusty64 $ask "Enter box name")
+boxUrl=$(getValue https://vagrantcloud.com/ubuntu/trusty64 $ask "Enter box URL")
+syncDir=$(getValue /var/www $ask "Enter synced folder")
+memory=$(getValue 1024 $ask "Enter memory size")
+ip=$(getValue 192.168.80.$num $ask "Enter private network IP (Required for vhosting)")
+
+if [ ! -z $ip ]; then
+	vhost=$(getValue $name.dev $ask "Enter vhost name (Requires sudo)")
+fi
+
+git=$(yesOrNo yes $ask "Install GIT on the VM?")
+node=$(yesOrNo yes $ask "Install NODE on the VM?")
+php=$(yesOrNo yes $ask "Install PHP on the VM?")
+pubDir=$(getValue ${syncDir}/public $ask "Enter public dir")
+
+if [ $php == 1 ]; then
+	composer=$(yesOrNo yes $ask "Install COMPOSER on the VM? (Needed for Wordpress)")
+fi
+
+if [ $composer == 1 ]; then
+	wordpress=$(yesOrNo yes $ask "Install Wordpress?")
+fi
+
+if [ $node == 1 ]; then
+	gulp=$(yesOrNo yes $ask "Use gulp?")
+fi
+
+mysql=$(yesOrNo yes $ask "Install MYSQL on the VM?")
+
+if [ $mysql == 1 ]; then
+	dbName=$(getValue db $ask "Enter database name")
+	dbPass=$(getValue root $ask "Enter database password")
+fi
+
+forward=$(yesOrNo no $ask "Use port forwarding?")
+
+if [ $forward == 1 ]; then
+	if [ $php == 1 ]; then
+		apachePort=$(getValue "" yes "apache port")
 	fi
+
+	if [ $mysql == 1 ]; then
+		mysqlPort=$(getValue "" yes "mysql port")
+	fi
+
+	sshPort=$(getValue "" yes "ssh port")
+fi
+
+assetDir=$pubDir
+if [ $wordpress == 1 ]; then
+	assetDir=$pubDir/wp-content/themes/$name/assets
+fi
+
+assetDir=$(getValue $assetDir $ask "Enter asset dir")
+
+# INSERTS
+###########################################
+
+if [ $gulp == 1 ]; then
+	git clone https://github.com/antoniozzo/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp; cd $dir
+	insert package.json "\[name\]" $name
+	insert bower.json "\[name\]" $name
+fi
+
+git clone https://github.com/antoniozzo/vagrant-template.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/* $dir/; rm -rf $dir/tmp; cd $dir
+inserts=( name boxName boxUrl syncDir memory ip vhost git node php pubDir assetDir wordpress composer mysql dbName dbPass apachePort mysqlPort sshPort app )
+for i in ${inserts[@]}; do
+	insert Vagrantfile "\[${i}\]" ${!i}
 done
 
-git clone https://github.com/antoniozzo/vagrant-template.git $pDIR/tmp
-rm -rf $pDIR/tmp/.git
-mv $pDIR/tmp/* $pDIR/
-rm -rf $pDIR/tmp
-cd $pDIR
-
-URL=https://vagrantcloud.com/ubuntu/trusty64
-IP=192.168.80.$(find ../ -maxdepth 1 -type d -print | wc -l | sed -e 's/^[ \t]*//')
-
-read -p "Do you wish to configure the VM yourself? [Default: no]: " pCONF
-if [[ $pCONF =~ ^[Yy] ]]; then
-	read -p "Enter box name [Default: ubuntu/trusty64]: " pBOX
-	read -p "Enter box URL [Default: https://vagrantcloud.com/ubuntu/trusty64]: " pBOXURL
-	read -p "Enter synced folder [Default: /var/www]: " pTDIR
-	read -p "Enter memory size [Default: 1024]: " pMEM
-	read -p "Enter private network IP (Required for vhosting) [Default: ${IP}]: " pIP
-	if [ ! -z $pIP ]; then
-		read -p "Do you wish use a vhost? (Requires sudo) [Default: ${pNAME}.dev]: " pVHOST
-	fi
-	read -p "Do you wish to install GIT on the VM? [Default: yes]: " pGIT
-	read -p "Do you wish to install NODE on the VM? [Default: yes]: " pNODE
-	read -p "Do you wish to install PHP on the VM? [Default: yes]: " pPHP
-	if [[ $pPHP =~ ^[Yy] ]]; then
-		read -p "Enter public dir [Default: ${pTDIR}public]: " pPUBDIR
-		read -p "Do you wish to install COMPOSER on the VM? [Default: yes]: " pCOMPOSER
-	fi
-	read -p "Do you wish to install MYSQL on the VM? [Default: yes]: " pMYSQL
-	if [[ $pMYSQL =~ ^[Yy] ]]; then
-		read -p "Enter database name [Default: db]: " pDBNAME
-		read -p "Enter database password [Default: root]: " pDBPASS
-	fi
-	read -p "Do you want to use port forwarding? [Default: no]: " pFORWARD
-	if [[ $pFORWARD =~ ^[Yy] ]]; then
-		if [[ $pPHP =~ ^[Yy] ]]; then
-			read -p "apache port: " pAPACHEPORT
-		fi
-		if [[ $pMYSQL =~ ^[Yy] ]]; then
-			read -p "mysql port: " pMYSQLPORT
-		fi
-		read -p "ssh port: " pSSHPORT
-	fi
-	read -p "Do you want to start vagrant after install? [Default: yes]: " pVAGRANT
-else
-	unset pBOX
-	unset pBOXURL
-	unset pTDIR
-	unset pMEM
-	unset pVHOST
-	unset pGIT
-	unset pNODE
-	unset pPHP
-	unset pCOMPOSER
-	unset pMYSQL
-	unset pDBNAME
-	unset pDBPASS
-	unset pVAGRANT
-	unset pIP
-	unset pPUBDIR
-	unset pAPACHEPORT
-	unset pMYSQLPORT
-	unset pSSHPORT
+if [ ! -z $ip -a ! -z $vhost ]; then
+	echo "Will create a vhost in /etc/hosts, please provide password"
+	sudo bash -c "echo -e '${ip}\t${vhost}' >> /etc/hosts"
 fi
 
-pBOX=${pBOX:-ubuntu/trusty64}
-pTDIR=${pTDIR:-/var/www/}
-pMEM=${pMEM:-1024}
-pVHOST=${pVHOST:-$pNAME.dev}
-pGIT=${pGIT:-yes}
-pNODE=${pNODE:-yes}
-pPHP=${pPHP:-yes}
-pCOMPOSER=${pCOMPOSER:-yes}
-pMYSQL=${pMYSQL:-yes}
-pDBNAME=${pDBNAME:-db}
-pDBPASS=${pDBPASS:-root}
-pVAGRANT=${pVAGRANT:-yes}
-pBOXURL=${pBOXURL:-$URL}
-pIP=${pIP:-$IP}
-
-DIR="${pTDIR}public"
-pPUBDIR=${pPUBDIR:-$DIR}
-
-sed -i '' "s|pNAME|${pNAME}|g" Vagrantfile
-sed -i '' "s|pBOXNAME|${pBOX}|g" Vagrantfile
-sed -i '' "s|pBOXURL|${pBOXURL}|g" Vagrantfile
-sed -i '' "s|pTDIR|${pTDIR}|g" Vagrantfile
-sed -i '' "s|pMEM|${pMEM}|g" Vagrantfile
-
-if [ ! -z $pIP ]; then
-	sed -i '' "s|#pIP ||g" Vagrantfile
-	sed -i '' "s|pIP|${pIP}|g" Vagrantfile
-
-	if [ ! -z $pVHOST ]; then
-		sudo bash -c "echo -e '${pIP}\t${pVHOST}' >> /etc/hosts"
-	fi
-fi
-
-if [[ $pGIT =~ ^[Yy] ]]; then
-	sed -i '' "s|#pGIT ||g" Vagrantfile
-fi
-
-if [[ $pNODE =~ ^[Yy] ]]; then
-	sed -i '' "s|#pNODE ||g" Vagrantfile
-fi
-
-if [[ $pPHP =~ ^[Yy] ]]; then
-	sed -i '' "s|#pPHP ||g" Vagrantfile
-	sed -i '' "s|pPUBDIR|${pPUBDIR}|g" provision/php.sh
-
-	if [[ $pCOMPOSER =~ ^[Yy] ]]; then
-		sed -i '' "s|#pCOMPOSER ||g" Vagrantfile
-	fi
-fi
-
-if [[ $pMYSQL =~ ^[Yy] ]]; then
-	sed -i '' "s|#pMYSQL ||g" Vagrantfile
-	sed -i '' "s|pDBNAME|${pDBNAME}|g" provision/mysql.sh
-	sed -i '' "s|pDBPASS|${pDBPASS}|g" provision/mysql.sh
-
-	if [[ $pPHP =~ ^[Yy] ]]; then
-		sed -i '' "s|#pPHPMYSQL ||g" provision/mysql.sh
-	fi
-fi
-
-if [ ! -z $pAPACHEPORT ]; then
-	sed -i '' "s|#pAPACHEPORT ||g" Vagrantfile
-	sed -i '' "s|pAPACHEPORT|${pAPACHEPORT}|g" Vagrantfile
-fi
-
-if [ ! -z $pMYSQLPORT ]; then
-	sed -i '' "s|#pMYSQLPORT ||g" Vagrantfile
-	sed -i '' "s|pMYSQLPORT|${pMYSQLPORT}|g" Vagrantfile
-fi
-
-if [ ! -z $pSSHPORT ]; then
-	sed -i '' "s|#pSSHPORT ||g" Vagrantfile
-	sed -i '' "s|pSSHPORT|${pSSHPORT}|g" Vagrantfile
-fi
-
-if [[ $pVAGRANT =~ ^[Yy] ]]; then
+if [ $vagrant == 1 ]; then
 	vagrant up
+	echo -e "\n\nYour project is running at http://${vhost}\n\n"
 fi
-
-echo "\n\nYour project is running in http://${pVHOST}\n\n"

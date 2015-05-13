@@ -1,12 +1,8 @@
 {
-	"name": "",
-	"description": "WordPress stack",
+	"name": "${1}",
+	"description": "",
 	"type": "project",
-	"minimum-stability": "dev",
-	"repositories": [],
-	"config": {
-		"vendor-dir": "vendor"
-	},
+	"minimum-stability": "stable",
 	"require": {
 		"composer/installers": "~1.0",
 		"johnpbloch/wordpress": "4.*"
