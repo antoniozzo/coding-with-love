@@ -66,7 +66,7 @@ fi
 git=$(yesOrNo yes $ask "Install GIT on the VM?")
 node=$(yesOrNo yes $ask "Install NODE on the VM?")
 php=$(yesOrNo yes $ask "Install PHP on the VM?")
-pubDir=$(getValue ${syncDir}/public $ask "Enter public dir")
+pubDir=$(getValue ${syncDir} $ask "Enter public dir")
 
 if [ $php == 1 ]; then
 	composer=$(yesOrNo yes $ask "Install COMPOSER on the VM? (Needed for Wordpress)")
@@ -101,9 +101,9 @@ if [ $forward == 1 ]; then
 	sshPort=$(getValue "" yes "ssh port")
 fi
 
-assetDir=$pubDir
+assetDir=$dir
 if [ $wordpress == 1 ]; then
-	assetDir=$pubDir/wp-content/themes/$name/assets
+	assetDir=$dir/wp-content/themes/$name/assets
 fi
 
 assetDir=$(getValue $assetDir $ask "Enter asset dir")
@@ -112,13 +112,18 @@ assetDir=$(getValue $assetDir $ask "Enter asset dir")
 ###########################################
 
 if [ $gulp == 1 ]; then
-	git clone https://github.com/antoniozzo/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp; cd $dir
-	insert package.json "\[name\]" $name
-	insert bower.json "\[name\]" $name
+	git clone https://github.com/maeertin/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp;
+	insert $assetDir/package.json "\[name\]" $name
+	insert $assetDir/bower.json "\[name\]" $name
+fi
+
+if [ $wordpress == 1 ]; then
+	git clone https://github.com/maeertin/coding-with-love.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/wordpress/* $dir/; rm -rf $dir/tmp;
+	insert $dir/composer.json "\[name\]" $name
 fi
 
 git clone https://github.com/antoniozzo/vagrant-template.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/* $dir/; rm -rf $dir/tmp; cd $dir
-inserts=( name boxName boxUrl syncDir memory ip vhost git node php pubDir assetDir wordpress composer mysql dbName dbPass apachePort mysqlPort sshPort app )
+inserts=( name boxName boxUrl syncDir memory ip vhost git node php pubDir composer mysql dbName dbPass apachePort mysqlPort sshPort app )
 for i in ${inserts[@]}; do
 	insert Vagrantfile "\[${i}\]" ${!i}
 done
@@ -128,7 +133,7 @@ if [ ! -z $ip -a ! -z $vhost ]; then
 	sudo bash -c "echo -e '${ip}\t${vhost}' >> /etc/hosts"
 fi
 
-if [ $vagrant == 1 ]; then
-	vagrant up
-	echo -e "\n\nYour project is running at http://${vhost}\n\n"
-fi
+# if [ $vagrant == 1 ]; then
+# 	vagrant up
+# 	echo -e "\n\nYour project is running at http://${vhost}\n\n"
+# fi
