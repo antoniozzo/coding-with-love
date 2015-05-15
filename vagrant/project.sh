@@ -132,7 +132,7 @@ if [ $wordpress == 1 ]; then
 	mkdir -p $workDir/$wpContentDir/themes/$name
 	mkdir -p $workDir/$assetDir
 	mv theme/* $workDir/$wpContentDir/themes/$name/; rm -rf theme/
-	echo "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$wpContentDir/themes/$name/style.css
+	echo -e "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$wpContentDir/themes/$name/style.css
 	insert composer.json "\[name\]" $name
 fi
 
