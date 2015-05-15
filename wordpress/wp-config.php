@@ -20,7 +20,7 @@ define('DB_USER', getenv('DB_USER'));
 define('DB_PASSWORD', getenv('DB_PASSWORD'));
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
-define('WP_HOME', getenv('DOMAIN')); 
+define('WP_HOME', 'http://' . getenv('DOMAIN')); 
 define('WP_SITEURL', WP_HOME . '/wp');
 define('WP_CONTENT_URL', WP_HOME . '/wp-content');
 define('WP_CONTENT_DIR', dirname(__FILE__) . '/wp-content');

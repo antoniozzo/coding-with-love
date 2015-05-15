@@ -36,15 +36,15 @@ Vagrant.configure("2") do |config|
 			config.vm.network :private_network, ip: "#{ip}"
 		end
 
-		if apachePort
+		if apachePort != ""
 			config.vm.network :forwarded_port, guest: 80, host: apachePort, auto_correct: true
 		end
 
-		if mysqlPort
+		if mysqlPort != ""
 			config.vm.network :forwarded_port, guest: 3306, host: mysqlPort, auto_correct: true
 		end
 
-		if sshPort
+		if sshPort != ""
 			config.vm.network :forwarded_port, guest: 22, host: sshPort, auto_correct: true
 		end
 

@@ -104,7 +104,8 @@ fi
 
 assetDir=$dir
 if [ $wordpress == 1 ]; then
-	assetDir=$dir/wp-content/themes/$name/assets
+	wpContentDir=$dir/wp-content
+	assetDir=$wpContentDir/themes/$name/assets
 fi
 
 assetDir=$(getValue $assetDir $ask "Enter asset dir")
@@ -127,11 +128,15 @@ done
 
 if [ $wordpress == 1 ]; then
 	mv tmp/wordpress/* ./
+	mkdir -p $workDir/$wpContentDir/plugins
+	mkdir -p $workDir/$wpContentDir/themes/$name
+	mkdir -p $workDir/$assetDir
+	mv theme/* $workDir/$wpContentDir/themes/$name/; rm -rf theme/
+	echo "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$wpContentDir/themes/$name/style.css
 	insert composer.json "\[name\]" $name
 fi
 
 if [ $gulp == 1 ]; then
-	mkdir -p $workDir/$assetDir/
 	cd $workDir/$assetDir/
 	mv $workDir/$dir/tmp/assets/* ./
 	insert package.json "\[name\]" $name
