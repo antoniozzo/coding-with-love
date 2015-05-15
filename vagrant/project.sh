@@ -104,8 +104,7 @@ fi
 
 assetDir=$dir
 if [ $wordpress == 1 ]; then
-	wpContentDir=$dir/wp-content
-	assetDir=$wpContentDir/themes/$name/assets
+	assetDir=wp-content/themes/$name/assets
 fi
 
 assetDir=$(getValue $assetDir $ask "Enter asset dir")
@@ -128,16 +127,16 @@ done
 
 if [ $wordpress == 1 ]; then
 	mv tmp/wordpress/* ./
-	mkdir -p $workDir/$wpContentDir/plugins
-	mkdir -p $workDir/$wpContentDir/themes/$name
+	mkdir -p $workDir/$dir/wp-content/plugins
+	mkdir -p $workDir/$dir/wp-content/themes/$name
 	mkdir -p $workDir/$assetDir
-	mv theme/* $workDir/$wpContentDir/themes/$name/; rm -rf theme/
-	echo -e "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$wpContentDir/themes/$name/style.css
+	mv theme/* $workDir/wp-content/themes/$name/; rm -rf theme/
+	echo -e "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$dir/wp-content/themes/$name/style.css
 	insert composer.json "\[name\]" $name
 fi
 
 if [ $gulp == 1 ]; then
-	cd $workDir/$assetDir/
+	cd $workDir/$dir/$assetDir/
 	mv $workDir/$dir/tmp/assets/* ./
 	insert package.json "\[name\]" $name
 	insert bower.json "\[name\]" $name
@@ -152,7 +151,8 @@ if [ ! -z $ip -a ! -z $vhost ]; then
 	sudo bash -c "echo -e '${ip}\t${vhost}' >> /etc/hosts"
 fi
 
-# if [ $vagrant == 1 ]; then
-# 	vagrant up
-# 	echo -e "\n\nYour project is running at http://${vhost}\n\n"
-# fi
+if [ $vagrant == 1 ]; then
+	vagrant up
+	echo -e "\n\nYour project is running at http://${vhost}\n\n"
+	open -a /Applications/Google\ Chrome.app http://$vhost/$assetDir/styleguide
+fi

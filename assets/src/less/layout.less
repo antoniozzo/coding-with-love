@@ -1,0 +1,279 @@
+/*
+Table layout helper
+
+Markup:
+<div class="layout layout-fixed layout-center layout-s style-layout-example">
+	<div>33.33%</div>
+	<div>33.33%</div>
+	<div>33.33%</div>
+</div>
+<div class="layout layout-fixed layout-center layout-s style-layout-example">
+	<div class="layout-w20">20%</div>
+	<div>35%</div>
+	<div>35%</div>
+	<div class="layout-w10">10%</div>
+</div>
+<div class="layout layout-fixed layout-s style-layout-example">
+	<div class="layout-left">Left</div>
+	<div class="layout-center">Center</div>
+	<div class="layout-right">Right</div>
+</div>
+
+Styleguide layout.table
+*/
+
+/*
+Padding
+
+.layout-s - Small padding
+.layout-m - Medium padding
+.layout-l - Large padding
+
+Markup:
+<div class="layout layout-fixed layout-center {{modifier_class}} style-layout-example">
+	<div>33.33%</div>
+	<div>33.33%</div>
+	<div>33.33%</div>
+</div>
+
+Styleguide layout.table.padding
+*/
+
+/*
+Horizontal content alignment
+
+.layout-left - Content left
+.layout-center - Content center
+.layout-right - Content right
+
+Markup:
+<div class="layout layout-fixed layout-s {{modifier_class}} style-layout-example">
+	<div class="{{modifier_class}}">33.33%</div>
+	<div class="{{modifier_class}}">33.33%</div>
+	<div class="{{modifier_class}}">33.33%</div>
+</div>
+
+Styleguide layout.table.horizontal
+*/
+
+/*
+Vertical content alignment
+
+.layout-top - Align top
+.layout-middle - Align middle
+.layout-bottom - Align bottom
+
+Markup:
+<div class="layout layout-fixed layout-s {{modifier_class}} style-layout-example">
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe nam, inventore iste odio! Qui ad cumque quas possimus fugit iusto fugiat adipisci itaque quidem vero dolorem accusantium, illo delectus corporis.</div>
+	<div>Lorem ipsum dolor sit amet.</div>
+</div>
+
+Styleguide layout.table.vertical
+*/
+
+.layout-spacing(@spacing) {
+	@spacingHalf : @spacing / 2;
+
+	.calc(width, ~'100% + @{spacing}');
+	.calc(margin-left, ~'-@{spacingHalf}');
+
+	+ .layout {
+		padding-top: @spacing;
+	}
+
+	> * + * {
+		padding-left: @spacing;
+	}
+
+	> * {
+		.calc(padding-left, ~'@{spacingHalf}');
+		.calc(padding-right, ~'@{spacingHalf}');
+	}
+}
+
+.layout-copy() {
+	display: table;
+	width: 100%;
+
+	> * {
+		display: table-cell;
+
+		vertical-align: inherit;
+		text-align: inherit;
+
+		> * {
+			word-break: break-word;
+		}
+	}
+	
+	// Variants
+	
+	&.layout-fixed {
+		table-layout: fixed;
+	}
+
+	// Spacing
+	
+	&.layout-s {
+		.layout-spacing(1rem);
+	}
+	
+	&.layout-m {
+		.layout-spacing(2rem);
+	}
+	
+	&.layout-l {
+		.layout-spacing(3rem);
+	}
+
+	// Rows + Spacing
+
+	&.layout-rows {
+		> * {
+			display: table-row;
+
+			> * {
+				display: table-cell;
+
+				> * {
+					word-break: break-word;
+				}
+			}
+		}
+
+		&.layout-s {
+			> * + * > * {
+				padding-top: 1rem;
+			}
+
+			> * > * + * {
+				padding-left: 1rem;
+			}
+
+			> * > * {
+				.calc(padding-left, ~'.5rem');
+				.calc(padding-right, ~'.5rem');
+			}
+		}
+		
+		&.layout-m {
+			> * + * > * {
+				padding-top: 2rem;
+			}
+
+			> * > * + * {
+				padding-left: 2rem;
+			}
+
+			> * > * {
+				.calc(padding-left, ~'1rem');
+				.calc(padding-right, ~'1rem');
+			}
+		}
+		
+		&.layout-l {
+			> * + * > * {
+				padding-top: 3rem;
+			}
+
+			> * > * + * {
+				padding-left: 3rem;
+			}
+
+			> * > * {
+				.calc(padding-left, ~'1.5rem');
+				.calc(padding-right, ~'1.5rem');
+			}
+		}
+	}
+
+	// Vertical Aligning
+	
+	&.layout-top {
+		vertical-align: top;
+	}
+	
+	&.layout-middle {
+		vertical-align: middle;
+	}
+	
+	&.layout-bottom {
+		vertical-align: bottom;
+	}
+
+	// Text Aligning
+	
+	&.layout-left, .layout-left {
+		text-align: left;
+	}
+	
+	&.layout-right, .layout-right {
+		text-align: right;
+	}
+	
+	&.layout-center, .layout-center {
+		text-align: center;
+	}
+
+	// Widths
+	
+	.layout-w0  { width: 0; }
+	.layout-w10 { width: 10%; }
+	.layout-w20 { width: 20%; }
+	.layout-w30 { width: 30%; }
+	.layout-w40 { width: 40%; }
+	.layout-w50 { width: 50%; }
+	.layout-w60 { width: 60%; }
+	.layout-w70 { width: 70%; }
+	.layout-w80 { width: 80%; }
+	.layout-w90 { width: 90%; }
+}
+
+.layout {
+&.layout-s + .layout,
+	&.layout-s > * + * {
+		padding-top: 1rem;
+	}
+
+	&.layout-m + .layout,
+	&.layout-m > * + * {
+		padding-top: 2rem;
+	}
+
+	&.layout-l+ .layout,
+	&.layout-l > * + * {
+		padding-top: 3rem;
+	}
+
+	@media @mobile {
+		&:not(.layout-off-mobile) {
+			> * + * {
+				padding-top: 0;
+			}
+
+			.layout-copy();
+		}
+	}
+
+	@media @tablet {
+		&:not(.layout-off-tablet) {
+			> * + * {
+				padding-top: 0;
+			}
+
+			.layout-copy();
+		}
+	}
+
+	@media @desktopUp {
+		&:not(.layout-off-desktop) {
+			> * + * {
+				padding-top: 0;
+			}
+
+			.layout-copy();
+		}
+	}
+}

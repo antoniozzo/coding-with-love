@@ -143,5 +143,25 @@
 	padding: 30px;
 
 	.border-radius(6px);
-	background-color: @styleGuideColor;
+	background-color: darken(@styleGuideColor, 10%);
+}
+
+.style-parameters-name {
+	color: darken(@styleGuideColor, 10%);
+	font-weight: 600;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.style-layout-example {
+	> * {
+		line-height: 3rem;
+
+		background-color: lighten(@styleGuideColor, 20%);
+		background-clip: content-box;
+
+		color: #fff;
+	}
 }

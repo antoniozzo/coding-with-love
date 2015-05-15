@@ -8,8 +8,8 @@ Variables
 @tabletOnly      - ~'only screen and (min-width : 750px) and (max-width: 959px)'
 @desktop         - ~'only screen and (min-width : 960px)'
 @desktopBig      - ~'only screen and (min-width : 1140px)'
-@bodyBg          - #fff
-@fontColor       - #666
+@bodyBg          - \#fff
+@fontColor       - \#666
 @fontFamily      - 'Open Sans', Helvetica, Arial, serif
 
 Weight: 1
@@ -17,15 +17,16 @@ Weight: 1
 Styleguide less.variables
  */
 
-@mobileOnly      : ~'only screen and (max-width : 749px)';
-@mobileLandscape : ~'only screen and (max-width : 749px) and (orientation: landscape)';
-@tablet          : ~'only screen and (min-width : 750px)';
-@tabletDown      : ~'only screen and (max-width : 959px)';
-@tabletOnly      : ~'only screen and (min-width : 750px) and (max-width: 959px)';
-@desktop         : ~'only screen and (min-width : 960px)';
-@desktopBig      : ~'only screen and (min-width : 1140px)';
+@mobile          : ~'only screen and (max-width : 767px)';
+@tablet          : ~'only screen and (min-width : 768px) and (max-width : 991px)';
+@tabletUp        : ~'only screen and (min-width : 768px)';
+@tabletDown      : ~'only screen and (max-width : 991px)';
+@desktop         : ~'only screen and (min-width : 992px) and (max-width : 1199px)';
+@desktopUp       : ~'only screen and (min-width : 992px)';
+@desktopDown     : ~'only screen and (max-width : 1199px)';
+@desktopBig      : ~'only screen and (min-width : 1200px)';
 
-@bodyBg          : #fff;
+@bodyBg          : #f2f2f2;
 @fontColor       : #666677;
 
 @styleGuideColor : #333344;
