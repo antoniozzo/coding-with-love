@@ -1,5 +1,6 @@
 #!/bin/bash
 
+workDir=$(pwd)
 num=$(find ../ -maxdepth 1 -type d -print | wc -l | sed -e 's/^[ \t]*//')
 
 # METHODS
@@ -111,22 +112,35 @@ assetDir=$(getValue $assetDir $ask "Enter asset dir")
 # INSERTS
 ###########################################
 
-if [ $gulp == 1 ]; then
-	git clone https://github.com/antoniozzo/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp;
-	insert $assetDir/package.json "\[name\]" $name
-	insert $assetDir/bower.json "\[name\]" $name
-fi
+echo $workDir/$dir/tmp/
+mkdir -p $workDir/$dir/tmp/
 
-if [ $wordpress == 1 ]; then
-	git clone https://github.com/antoniozzo/coding-with-love.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/wordpress/* $dir/; rm -rf $dir/tmp;
-	insert $dir/composer.json "\[name\]" $name
-fi
+git clone https://github.com/antoniozzo/coding-with-love.git $workDir/$dir/tmp/
+cd $workDir/$dir/
+shopt -s dotglob
 
-git clone https://github.com/antoniozzo/vagrant-template.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/* $dir/; rm -rf $dir/tmp; cd $dir
+mv tmp/vagrant/template/* ./
 inserts=( name boxName boxUrl syncDir memory ip vhost git node php pubDir composer mysql dbName dbPass apachePort mysqlPort sshPort app )
 for i in ${inserts[@]}; do
 	insert Vagrantfile "\[${i}\]" ${!i}
 done
+
+if [ $wordpress == 1 ]; then
+	mv tmp/wordpress/* ./
+	insert composer.json "\[name\]" $name
+fi
+
+if [ $gulp == 1 ]; then
+	mkdir -p $workDir/$assetDir/
+	cd $workDir/$assetDir/
+	mv $workDir/$dir/tmp/assets/* ./
+	insert package.json "\[name\]" $name
+	insert bower.json "\[name\]" $name
+	sudo npm i; bower install; gulp build
+	cd $workDir/$dir/
+fi
+
+rm -rf tmp/
 
 if [ ! -z $ip -a ! -z $vhost ]; then
 	echo "Will create a vhost in /etc/hosts, please provide password"
