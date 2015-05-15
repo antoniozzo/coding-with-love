@@ -129,8 +129,8 @@ if [ $wordpress == 1 ]; then
 	mv tmp/wordpress/* ./
 	mkdir -p $workDir/$dir/wp-content/plugins
 	mkdir -p $workDir/$dir/wp-content/themes/$name
-	mkdir -p $workDir/$assetDir
-	mv theme/* $workDir/wp-content/themes/$name/; rm -rf theme/
+	mkdir -p $workDir/$dir/$assetDir
+	mv theme/* $workDir/$dir/wp-content/themes/$name/; rm -rf theme/
 	echo -e "/*!\nTheme Name: ${name}\nVersion: 0.0.1\n*/" > $workDir/$dir/wp-content/themes/$name/style.css
 	insert composer.json "\[name\]" $name
 fi
