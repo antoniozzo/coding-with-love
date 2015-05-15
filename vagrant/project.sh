@@ -112,13 +112,13 @@ assetDir=$(getValue $assetDir $ask "Enter asset dir")
 ###########################################
 
 if [ $gulp == 1 ]; then
-	git clone https://github.com/maeertin/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp;
+	git clone https://github.com/antoniozzo/coding-with-love.git $assetDir/tmp; rm -rf $assetDir/tmp/.git; mv $assetDir/tmp/assets/* $assetDir/; rm -rf $assetDir/tmp;
 	insert $assetDir/package.json "\[name\]" $name
 	insert $assetDir/bower.json "\[name\]" $name
 fi
 
 if [ $wordpress == 1 ]; then
-	git clone https://github.com/maeertin/coding-with-love.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/wordpress/* $dir/; rm -rf $dir/tmp;
+	git clone https://github.com/antoniozzo/coding-with-love.git $dir/tmp; rm -rf $dir/tmp/.git; mv $dir/tmp/wordpress/* $dir/; rm -rf $dir/tmp;
 	insert $dir/composer.json "\[name\]" $name
 fi
 
