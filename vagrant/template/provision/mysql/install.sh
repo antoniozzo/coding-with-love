@@ -14,7 +14,6 @@ sudo apt-get -y install mysql-server
 if [ $3 == "1" ]; then 
 	echo "Installing php5-mysql.."
 	sudo apt-get install php5-mysql
-	sudo service apache2 restart
 fi
 
 echo "Creating database.."
