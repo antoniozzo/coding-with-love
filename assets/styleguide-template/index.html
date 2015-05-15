@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--[if lte IE 6]>            <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IEMobile 7]>          <html class="no-js iem7" lang="en"> <![endif]-->
+<!--[if (IE 7)&(!IEMobile)]>  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>                <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Splay Assets - Styleguide</title>
+
+  <meta name="viewport" content="width=device-width">
+
+  {{{styles}}}
+</head>
+<body>
+
+<div id="style-menu">
+  <nav class="style-nav">
+    <a href="./">
+      <span>0</span>
+      Overview
+    </a>
+    {{#eachRoot}}
+      <a href="section-{{referenceURI}}.html">
+        <span>{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span>
+        {{header}}
+      </a>
+      {{#ifReference ../rootName}}
+        <hr>
+        {{#eachSection reference}}
+          {{#ifDepth 2}}
+            <a href="section-{{../../referenceURI}}.html#ref-{{referenceURI}}">
+              <span>{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span>
+              {{header}}
+            </a>
+          {{/ifDepth}}
+        {{/eachSection}}
+        <hr>
+      {{/ifReference}}
+    {{/eachRoot}}
+  </nav>
+</div>
+
+<div id="style-main">
+  {{#if homepage}}
+    {{{homepage}}}
+  {{else}}
+
+  {{#eachSection rootName}}
+    <div id="ref-{{referenceURI}}" class="style-section style-section-depth-{{depth}}">
+
+      <div class="style-content">
+        <a class="no-link" href="#ref-{{referenceURI}}">
+          <h{{depth}}>
+            <span class="is-highlighted">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span>
+            {{header}}
+            <small class="is-disabled">#</small>
+          </h{{depth}}>
+        </a>
+
+        {{#if parameters}}
+          <ul class="style-parameters">
+          {{#eachParameter}}
+            <li class="style-parameters-item">
+              <code class="style-parameters-name">{{name}}</code>
+              <div class="style-parameters-desc">{{{description}}}</div>
+            </li>
+          {{/eachParameter}}
+          </ul>
+        {{/if}}
+
+        {{#if description}}
+          <div class="style-description">
+            {{{description}}}
+          </div>
+        {{/if}}
+      </div>
+
+      {{#if markup}}
+        <div class="style-modifiers">
+          <div class="style-modifiers-heading">Example{{#if modifiers}}s{{/if}}</div>
+          {{#if modifiers}}
+            <div class="style-modifier-name">Default styling</div>
+          {{/if}}
+          <div class="style-modifier-example">{{{markup}}}</div>
+          {{#eachModifier}}
+            <div class="style-modifier-name">{{name}} - {{{description}}}</div>
+            <div class="style-modifier-example">{{{markup}}}</div>
+          {{/eachModifier}}
+        </div>
+
+        <div class="style-markup">
+          <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
+        </div>
+      {{/if}}
+
+    </div>
+  {{/eachSection}}
+{{/if}}
+</div>
+
+<script src="public/prettify.js"></script>
+<script>
+  prettyPrint();
+</script>
+{{{scripts}}}
+
+</body>
+</html>

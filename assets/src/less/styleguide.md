@@ -1,6 +1,7 @@
 # Styleguide & Coding standards
 
 Make sure to comment your css declarations like this to have them included in this living styleguide:
+
 	/*
 	Textarea
 
@@ -31,6 +32,7 @@ Follow this order to keep the properties clean and easy to use:
 * Other
 
 Example:
+
 	.component {
 		.mixin(); // mixin setting more then one attribute
 
@@ -62,6 +64,7 @@ Follow this order to keep the component clean and easy to use:
 * Sub components
 
 Example:
+
 	.component {
 		// Component properties
 

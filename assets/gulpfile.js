@@ -20,8 +20,7 @@ var config      = require('./gulpconfig.json'),
 	shell       = require('gulp-shell'),
 	seq         = require('run-sequence'),
 	revO        = require('gulp-rev-outdated'),
-	gutil       = require('gulp-util'),
-	gulpkss		= require('gulp-kss');
+	gutil       = require('gulp-util');
 
 
 /* Methods
@@ -141,8 +140,7 @@ gulp.task('styleguide', shell.task([
 	'./node_modules/kss/bin/kss-node '
 		+ config.styleguide.src
 		+ ' ' + config.styleguide.dist
-		+ ' --template styleguide-template --css '
-		+ '../' + config.css.dist + '/' + config.css.id + '.css'
+		+ ' --css ../' + config.css.dist + '/' + config.css.id + '.css'
 ]));
 
 
