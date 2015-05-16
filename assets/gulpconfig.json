@@ -30,7 +30,9 @@
 
 	"styleguide": {
 		"src": "src/less",
-		"dist": "styleguide"
+		"template": "src/styleguide",
+		"dist": "dist/styleguide",
+		"css": "../css/main.css"
 	},
 
 	"browser": {

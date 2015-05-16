@@ -1,7 +1,7 @@
 # Styleguide & Coding standards
 
 Make sure to comment your css declarations like this to have them included in this living styleguide:
-<div class="style-markup"><pre class="prettyprint linenums lang-css"><code data-language="css">/\*
+<div class="style_markup"><pre class="prettyprint linenums lang-css"><code data-language="css">/\*
 Textarea
 &nbsp;
 It's a textarea.
@@ -33,7 +33,7 @@ Follow this order to keep the properties clean and easy to use:
 * Other
 
 Example:
-<div class="style-markup"><pre class="prettyprint linenums lang-css"><code data-language="css">.component {
+<div class="style_markup"><pre class="prettyprint linenums lang-css"><code data-language="css">.component {
 	.mixin(); // mixin setting more then one attribute
 	&nbsp;
 	display: block;
@@ -66,7 +66,7 @@ Follow this order to keep the component clean and easy to use:
 * Sub-Components (Separate modifiers with 1 dash "-")
 
 Example:
-<div class="style-markup"><pre class="prettyprint linenums lang-css"><code data-language="css">/\*
+<div class="style_markup"><pre class="prettyprint linenums lang-css"><code data-language="css">/\*
 My component
 &nbsp;
 This is my component

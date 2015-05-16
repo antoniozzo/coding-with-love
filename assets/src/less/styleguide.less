@@ -1,3 +1,5 @@
+@styleGuideColor : #333344;
+
 .prettyprint {
 	font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace;
 	font-size: 12px;
@@ -20,7 +22,7 @@
 .var { color: #f2777a; }
 .fun { color: #6699cc; }
 
-#style-menu {
+#style_menu {
 	width: 220px;
 	position: fixed;
 	z-index: 9;
@@ -33,7 +35,7 @@
 	overflow: auto;
 }
 
-#style-main {
+#style_main {
 	position: fixed;
 	z-index: 4;
 	top: 0;
@@ -45,7 +47,7 @@
 	overflow: auto;
 }
 
-.style-nav {
+.style_nav {
 	margin: 0;
 	padding: 10px 0;
 	position: relative;
@@ -74,25 +76,31 @@
 	}
 
 	span {
-		display: inline-block;
-		min-width: 20px;
-	}
-
-	hr {
-		margin: 10px 0;
-		border-color: fade(#fff, 20%);
+		float: right;
 	}
 }
 
-.style-section {
+.style_nav-sub {
+	background-color: darken(@styleGuideColor, 10%);
+
+	a:first-child {
+		padding-top: 10px;
+	}
+
+	a:last-child {
+		padding-bottom: 10px;
+	}
+}
+
+.style_section {
 	margin-bottom: 30px;
 }
 
-.style-content {
+.style_content {
 	margin-bottom: 20px;
 }
 
-.style-modifiers {
+.style_modifiers {
 	.clearfix();
 	padding: 30px;
 	margin-bottom: 20px;
@@ -103,7 +111,7 @@
 	overflow: hidden;
 }
 
-.style-modifiers-heading {
+.style_modifiers-heading {
 	margin: -30px -30px 30px;
 	padding: 10px 30px;
 	background-color: @styleGuideColor;
@@ -115,7 +123,7 @@
 	color: #fff;
 }
 
-.style-modifier-name {
+.style_modifier-name {
 	margin: 0 -30px 10px;
 	padding: 10px 30px;
 	border-top: 1px solid fade(@styleGuideColor, 40%);
@@ -125,12 +133,12 @@
 	letter-spacing: .1em;
 	text-transform: uppercase;
 
-	.style-modifiers-heading + & {
+	.style_modifiers-heading + & {
 		margin-top: -30px;
 	}
 }
 
-.style-modifier-example {
+.style_modifier-example {
 	margin-bottom: 30px;
 
 	&:last-child {
@@ -138,7 +146,7 @@
 	}
 }
 
-.style-markup {
+.style_markup {
 	.clearfix();
 	padding: 30px;
 
@@ -146,16 +154,12 @@
 	background-color: darken(@styleGuideColor, 10%);
 }
 
-.style-parameters-name {
+.style_parameters-name {
 	color: darken(@styleGuideColor, 10%);
 	font-weight: 600;
-
-	&:last-child {
-		margin-bottom: 0;
-	}
 }
 
-.style-layout-example {
+.style_layout-example {
 	> * {
 		line-height: 3rem;
 

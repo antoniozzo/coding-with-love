@@ -1,7 +1,8 @@
 /*
 Default buttons
 
-.btn-gray - Gray button
+.btn--red  - Red button
+.btn--blue - Blue button
 
 Markup:
 <button class="btn {{modifier_class}}">Click me</button>
@@ -14,11 +15,12 @@ Styleguide buttons.default
 /*
 Primary buttons
 
-.btn-gray - Gray button
+.btn--red  - Red button
+.btn--blue - Blue button
 
 Markup:
-<button class="btn {{modifier_class}}">Click me</button>
-<button class="btn {{modifier_class}}" disabled>Disabled</button>
+<button class="btn btn--primary {{modifier_class}}">Click me</button>
+<button class="btn btn--primary {{modifier_class}}" disabled>Disabled</button>
 
 Styleguide buttons.primary
  */
@@ -27,11 +29,12 @@ Styleguide buttons.primary
 /*
 Secondary buttons
 
-.btn-gray - Gray button
+.btn--red  - Red button
+.btn--blue - Blue button
 
 Markup:
-<button class="btn {{modifier_class}}">Click me</button>
-<button class="btn {{modifier_class}}" disabled>Disabled</button>
+<button class="btn btn--secondary {{modifier_class}}">Click me</button>
+<button class="btn btn--secondary {{modifier_class}}" disabled>Disabled</button>
 
 Styleguide buttons.secondary
  */
@@ -64,7 +67,7 @@ Styleguide buttons.secondary
 
 	// Variations
 
-	&.btn-primary {
+	&.btn--primary {
 		height: 5rem;
 		padding-left: 2.4rem;
 		padding-right: 2.4rem;
@@ -72,7 +75,7 @@ Styleguide buttons.secondary
 		line-height: 3.2rem;
 	}
 
-	&.btn-secondary {
+	&.btn--secondary {
 		height: 3rem;
 		padding: .5rem 3rem;
 
@@ -81,16 +84,16 @@ Styleguide buttons.secondary
 
 	// Behaviours
 
-	&.btn-block {
+	&.btn--block {
 		display: block;
 		padding-right: 0;
 		padding-left: 0;
 		width: 100%;
 	}
 
-	&.btn-block-mobile {
+	&.btn--block_mobile {
 		@media @mobile {
-			.btn-block;
+			.btn--block;
 		}
 	}
 
@@ -102,17 +105,27 @@ Styleguide buttons.secondary
 		border: 0;
 
 		color: #fff;
+		
+		&:not([disabled]) {
+			&:hover {
+				background-color: spin(lighten(@color, 10%), 5%);
+			}
 
-		&:hover {
-			background-color: spin(lighten(@color, 10%), 5%);
+			&:active {
+				background-color: spin(darken(@color, 10%), -5%);
+			}
 		}
 
-		&:active {
-			background-color: spin(darken(@color, 10%), -5%);
+		&[disabled] {
+			.opacity(.5);
 		}
 	}
 
-	&.btn-gray {
-		.colorize(#60687c);
+	&.btn--red {
+		.colorize(@swatchRed);
+	}
+
+	&.btn--blue {
+		.colorize(@swatchBlue);
 	}
 }

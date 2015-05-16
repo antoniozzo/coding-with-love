@@ -140,8 +140,8 @@ gulp.task('styleguide', shell.task([
 	'./node_modules/kss/bin/kss-node '
 		+ config.styleguide.src
 		+ ' ' + config.styleguide.dist
-		+ ' --template styleguide-template'
-		+ ' --css ../' + config.css.dist + '/' + config.css.id + '.css'
+		+ ' --template ' + config.styleguide.template
+		+ ' --css ' + config.styleguide.css
 ]));
 
 
